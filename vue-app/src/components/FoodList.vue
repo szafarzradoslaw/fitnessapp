@@ -1,20 +1,39 @@
-<script setup>
-import FoodItem from './FoodItem.vue'
+<script setup lang="ts">
+import type { FoodEntry } from "@/types/foodentry";
 
-defineProps({
-  foods: Array
-})
+const props = defineProps<{
+  foods: FoodEntry[];
+}>();
 
-const emit = defineEmits(['remove'])
+const emit = defineEmits<{
+  (e: "remove", id: string): void;
+}>();
 </script>
 
 <template>
-  <div class="space-y-3">
-    <FoodItem
-      v-for="food in foods"
-      :key="food.id"
-      :food="food"
-      @remove="emit('remove', $event)"
-    />
+  <div class="space-y-2">
+    <div
+      v-for="item in foods"
+      :key="item.id"
+      class="flex justify-between items-center border p-2 rounded"
+    >
+      <div>
+        <div class="font-medium">{{ item.name }}</div>
+        <div class="text-xs text-gray-500">
+          {{ item.weight }} {{ item.unit }}
+        </div>
+      </div>
+
+      <button
+        @click="emit('remove', item.id)"
+        class="text-red-500 text-sm"
+      >
+        Delete
+      </button>
+    </div>
+
+    <div v-if="foods.length === 0" class="text-gray-400 text-center py-4">
+      No foods added yet
+    </div>
   </div>
 </template>
